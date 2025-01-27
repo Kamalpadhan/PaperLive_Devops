@@ -1,0 +1,178 @@
+												Ansible_Day 01
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Pending Topics;
+Terraform - 2 or 3
+Kubernetes & Monitoring - 5 or 6 
+Python - 1 or 2
+
+Jenkins - we have understood how to automate the deployment of application.
+Run an app - we need multiple VMs;
+	1 VM for Jenkins
+	1 VM for SonarQube
+	2 VMs for Webservers
+	2 VMs for DB  
+	1 VM for log server
+
+Application Architecture;
+3 Tier App - Web server (4), App Server (5), DB Server (2), Log server (1), Jenkins Master (1), Jenkins Slave (3)
+Can we set up all the above infrastrcture in One VM? NO. The VM becomes burden and it will not work properly.
+	For a project we will have multiple environments (Dev, Test, Pre-Prod, Prod)
+	50 servers - install s/w, install packages - complex to do all these installations/updates/package installation - manual work
+	As a DevOps engineer we have to setup the infrastructure
+	In this case configuration of all the VMs is difficult for DevOps Engineers.
+	To overcome this we have ANSIBLE
+	Ansible is called as Configuration Management tool
+
+ANSIBLE
+Ansible is free and open-source software
+Configuration Management tools: Chef, Puppet, Ansible
+
+What we do in real-time scenarios is, we will create one server (Ansible VM). All the servers in which configuration is required for the project will be connected to Ansible VM. Now i will execute the commands in the Ansible VM, automatically in all the other servers the commands will get executed and therefor the installation of software's or configuration will become simpler
+Inside Ansible VM we will configure the IPs of all the other VMs. That's why Ansible is called as Configuration Management Tool.
+Ansible helps us to automate the process
+Before ansible came into the market, every organization used to have System Administrator (SysAdmin). SysAdmin will do the configurations in all the servers.
+
+Chef & Puppet works on PULL mechanism
+Ansible works on PUSH mechanism
+PULL mechanism works on the principle of checking the configuration information from the central server (Ansible VM)
+Central server pushes the configuration information on target servers on immediate basis
+
+Ansible Points
+1. O/S and Free
+2. Developed by Michael DeHann in 2012
+3. Owned by RedHat
+4. Free and Paid versions
+5. Can be used for Windows, Linux, Ubuntu....
+6. Platform independent
+7. Ansible is written using Python
+
+Components of Ansible;
+1. Playbooks
+2. Configuration management
+3. Deployment
+
+Ansible uses playbooks to automate deployment, manage, build, test and configure
+YAML - Yet Another Markup Language
+All ansible playbooks will have the extension as .yml or .yaml
+
+To work with Jenkins & Tomcat, we need Java
+To work with Ansible, we need Python
+
+GUI for ansible is known as Ansible Tower (it is least preferred)
+
+Ansible Architecture
+1 Ansible Main Server for which i will connect all the other servers. I will run a single file on ansible main server and then automatically everything that is required will get installed in other servers
+
+How ansible main server will be connecting to the worker nodes?
+	- by using SSH connection
+
+In Ansible we have Master Node / Control Node and Worker Nodes
+All the ansible playbooks will be written and executed in the ansible master node
+
+Playbooks are used to automate the configurations in ansible 
+Playbooks are collection of tasks that will be running on one or more VMs
+
+Ansible Main Components;
+1. Playbook
+2. Inventory file - all the worker node information will be available in the Inventory File
+
+Ansible Server - used to communicate with Worker Nodes and install packages, deployments..
+Worker Node takes the commands from Ansible Server and works according to it
+
+points to remember in inventory file;
+1. If you see # at the beginning of line, that line is called as COMMENTED. Commented lines cannot be executed
+Jenkins.sh ----> 
+yum install git -y
+#yum install maven -y
+
+2. Blank lines in inventory file are ignored by Ansible
+
+3. Server configuration in the inventory file is done as below;
+3.1. Grouped IPs - headers are provided
+[webservers]							
+<privateIP1>						
+<privateIP2>
+<privateIP3>
+
+[appservers]
+<privateIP1>
+<privateIP2>
+<privateIP3>
+
+[dev]
+<privateIP1>
+<privateIP2>
+<privateIP3>
+
+[test]
+<privateIP1>
+<privateIP2>
+<privateIP3>
+
+3.2. Ungrouped IP
+<privateIP1>
+<privateIP2>
+<privateIP3>
+
+----------------------------------------------------------------
+Setup the Ansible and Configuration of other servers
+----------------------------------------------------------------
+1. Launch 5 instances (t2.mciro, Amazon Linux 2 AMI)
+	 1 VM - Ansible Main Server, 2 VMs - Dev, 2 VMs - Test
+
+Ansible installation on Ansible Main Server only
+
+amazon-linux-extras install ansible2 -y
+yum install  python3 python3-pip -y
+yum install  python python-pip python-dlevel -y 
+
+Verify Installation
+ansible --version
+
+To see the list of ansible nodes connected to the ansible main server ---> ansible all -m ping
+
+
+Methods of working with ansible
+1. Adhoc Commands - these are simple Linux commands used for temporary works. These commands will be over-rider and cannot be reused
+2. Modules
+3. Playbook
+
+
+1. Adhoc Commands
+ansible all -a "yum install git -y"
+ansible dev -a "yum install git -y"
+ansible test -a "yum install git -y"
+
+To see the list of all the worker nodes
+ansible all --list-hosts
+
+To see only dev worker nodes
+ansible dev --list-hosts
+
+To see only test worker nodes
+ansible test --list-hosts
+
+To see only test node 1
+ansible test[0] --list-hosts
+
+To see only the last node among all the servers
+ansible all[-1] --list-hosts
+
+To see 2nd last node among all the servers
+ansible all[-2] --list-hosts
+
+Lets say i have 100 nodes, and i want to see from node 10 to node 20
+ansible all[9:19] --list-hosts
+
+To see the history of all the commands executed
+export HISTTIMEFORMAT="%F %T" ----> history ---> You will see all the commands executed
+
+
+
+
+
+
+
+
+
+
