@@ -1,0 +1,230 @@
+												Ansible_Day 02
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. Ansible Modules
+2. Playbooks
+
+Modules works on key-value pairs.
+If i want to work with ansible, we prefer to work with modules. It depends on the nature of the work.
+Based on the work the module will change.
+git ---> yum install git -y ---> Linux
+git ---> apt install git -y ---> Ubuntu
+Create an user ---> useradd
+
+Registration Form -
+	Name: Kastro
+	Address: Hyderabad
+	Email : xyx@gmail.com
+
+ansible all -a "yum install git -y"
+ansible all -a "yum remove git -y"
+
+Module 1 - To install and remove git
+ansible all -m yum -a "name=git state=present"
+ansible all -m yum -a "name=git state=absent"
+
+Module 2 - To install docker
+ansible all -m yum -a "name=docker state=present"
+
+Module 3 - To install apache/httpd
+ansible all -m yum -a "name=apache state=present"
+
+Colour Patterns in Ansible Module;
+1. Yellow - successful
+2. Red - failed
+3. Green - already done
+4. Blue - skipped
+
+Module 4 - To update apache/httpd
+ansible all -m yum -a "name=httpd state=latest"
+
+Module 5 - To start apache/httpd
+ansible all -m service -a "name=httpd state=started"
+
+Module 6 - To check the status apache/httpd
+ansible all -m service -a "name=httpd state=status"
+
+Adhoc command ---> ansible all -a "systemctl status httpd"
+
+ansible all -m service -a "name=httpd state=stopped"
+
+Module 6 - To create user
+ansible all -m user -a "name=Kastro state=present"
+
+Module 7 - To delete user
+ansible all -m user -a "name=Kastro state=absent"
+
+Module 8 - To copy a file
+Create a file in ansible main server
+Copy the file using below command;
+	ansible all -m copy -a "src=app.py dest=/tmp"
+Verify the file copy;
+	ansible all -a "ls /tmp"
+	ansible all -m copy -a "src=app.py dest=/root"
+
+
+----------------------
+PLAYBOOKS
+----------------------
+All ansible playbooks will have an extension as .yml or .yaml
+What is a playbook?
+	- Playbook is a collection of multiple modules
+	- We can execute multiple modules at a time using playbook
+	- We can always reuse the playbook at any time
+
+Playbooks are written using YAML
+YAML is syntax based
+YAML starts with --- and ends with ...
+We will write playbook in list format
+Extension of playbook is .yml or .yaml
+
+Playbook; git maven, docker, httpd, create user, update, upgrade
+
+Playbook 1 - Install, Start, Status of HTTPD
+
+---
+- hosts: all
+  tasks:
+    - name: install httpd
+      yum: name=httpd state=present
+
+    - name: start httpd
+      service: name=httpd state=started
+
+    - name: create user
+      user: name=kiran state=present
+...
+
+Execute the playbook ----> ansible-playbook <PlabookName>.yml
+
+---
+- hosts: all
+  tasks:
+    - name: remove httpd
+      yum: name=httpd state=absent
+    
+    - name: stop httpd  
+      service: name=httpd state=stopped
+
+    - name: remove user 
+      user: name=kiran state=absent
+...
+
+Note; Whenever a task gets failed in the playbook, the next task(s) will not get executed
+
+
+ANSIBLE TAGS
+---------------------------
+Lets say in a playbook i have 5 tasks, but i want to execute only 2 tasks, in this case i will use ANSIBLE TAGS
+TAGS are used to execute or skip specific tasks
+
+---
+- hosts: all
+  tasks:
+    - name: install docker
+      yum: name=docker state=present
+      tags: a
+
+    - name: start docker
+      service: name=docker state=started
+      tags: b
+
+    - name: install maven
+      yum: name=maven state=present
+      tags: c
+
+    - name: create user
+      user: name=praveen state=present
+      tags: d
+
+...
+
+SKIPPING TAGS
+a b c d e f g h i j k l m n o
+
+In real-time we will have multiple tags in a playbook. In that case, if you want to skip a specific tag, use below command
+ansible-playbook <PlabookName>.yml --skip-tags "f"
+When we execute the above command, the tag "f" will get skipped and the remaining tags will get executed
+
+To skip multiple tags
+ansible-playbook <PlabookName>.yml --skip-tags "f,h,o"
+When we execute the above command, the tags"f,h,o" will get skipped and the remaining tags will get executed
+
+
+Working with Adhoc Commands in Playbook;
+---
+- hosts: all
+  tasks:  
+    - name: install git
+      shell: yum install git -y
+
+    - name: install maven
+      command: yum install maven -y
+
+    - name: install docker
+      raw: yum install docker -y
+...
+
+SHELL, COMMAND, RAW are the three different modules which are used to run plain/simple linux commands. 
+Any of the 3 modules can be used to execute plain/simple linux commands.
+
+
+RAW >> COMMAND >> SHELL
+With the help of RAW module, we directly work with worker nodes without installing python on main node
+
+
+VARIABLES
+----------------------
+The concept of using variable is to simplify the work
+Variables are of 2 types
+	1. STATIC - it is defined inside the playbook
+	2. DYNAMIC - it is not defined inside the paybook
+
+Static Variable Playbook;
+---
+- hosts: all
+  vars:
+    a: git
+    b: maven
+    c: docker
+
+  tasks:
+    - name: install git
+      yum: name={{a}} state=present
+
+    - name: install maven
+      yum: name={{b}} state=present   
+
+    - name: install docker
+      yum: name={{c}} state=present
+    
+...
+
+Dynamic Variable Playbook;
+---
+- hosts: all
+  vars:
+    a: git
+    b: maven
+    c: docker
+  
+  tasks:
+    - name: install git
+      yum: name={{a}} state=present
+
+    - name: install maven
+      yum: name={{b}} state=present     
+
+    - name: install docker
+      yum: name={{c}} state=present    
+...
+
+
+
+
+
+
+
+
+
+
+
