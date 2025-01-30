@@ -1,0 +1,308 @@
+												Ansible_Day 03
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+VARIABLES
+----------------------
+The concept of using variable is to simplify the work
+Variables are of 2 types
+	1. STATIC - it is defined inside the playbook
+	2. DYNAMIC - it is not defined inside the paybook
+
+Static Variable Playbook;
+---
+- hosts: all
+  vars:
+    a: git
+    b: maven
+    c: docker
+
+  tasks:
+    - name: install git
+      yum: name={{a}} state=present
+
+    - name: install maven
+      yum: name={{b}} state=present   
+
+    - name: install docker
+      yum: name={{c}} state=present
+    
+...
+
+Dynamic Variable Playbook;
+---
+- hosts: all
+  vars:
+    a: git
+    b: maven
+    c: docker
+  
+  tasks:
+    - name: install git
+      yum: name={{a}} state=present
+
+    - name: install maven
+      yum: name={{b}} state=present     
+
+    - name: install docker
+      yum: name={{c}} state=present    
+...
+
+----------------
+LOOPS
+----------------
+Loops are used to reduce the size of a playbook
+
+---
+hosts: all
+tasks:
+  - name: install packages
+    yum: name:"{{item}}" state=present
+    with_items:
+      - git
+      - maven
+      - httpd
+      - tree
+...
+
+Do it yourself
+
+
+Cluster?
+Cluster means group of servers
+
+Types of servers;
+1. Homogenous - servers with same OS and flavour
+2. Heterogenous - servers with different OS and flavour
+
+Lets say i have 10 servers. 5 Linux. 5 ubuntu
+
+To check the OS family ---> ansible all -m setup | grep -i family
+
+CONDITIONS
+---
+- hosts: all
+  tasks:
+    - name: install git* on RedHat
+      yum: name=git* state=absent
+      when: ansible_os_family == "RedHat"
+
+    - name: install git* on Ubuntu
+      apt: name=git* state=absent
+      when: ansible_os_family == "Debian"
+...
+
+
+HANDLERS
+Lets say one task is dependent on another task, then we will use HANDLERS
+Module: NOTIFY
+
+ANSIBLE VAULT
+it is used to encrypt files, playbooks, etc
+Vault will store our data safely and securely
+If we want to access data which is inside the vault, we need to give Vault Password
+
+To encrypt & To decrypt
+To change the vault password: ansible-vault rekey cred.txt ---> You can sent the new password
+
+DRY RUN
+To know what will happen after executing the playbook (without actually executing the playbook)
+ansible-playbook <PlaybookName>.yml --check
+
+Dry run wil check for the correctness of syntaxes and other related information
+
+ANSIBLE ROLES
+Roles are used to divide the playbook into directory structure
+We can organize the playbooks
+we can encapsulate the data
+we can reduce the length of playbook
+
+ANSIBLE GALAXY
+It is used to store playbooks 
+It is not used in real-time
+
+Ansible Project
+Lets setup Tomcat using playbook
+
+---
+- hosts: dev
+  tasks:
+    - name: download tomcat from website
+      get_url:
+        url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.98/bin/apache-tomcat-9.0.98.tar.gz
+        dest: "/root/"
+
+    - name: extract tar file
+      command: tar -zxvf apache-tomcat-9.0.98.tar.gz
+
+    - name: rename tomcat
+      command: mv apache-tomcat-9.0.98 tomcat
+      tags: abcd
+
+    - name: install java
+      command: yum install java-1.8.0-openjdk -y
+
+    - name: setting the roles
+      template:
+        src: tomcat-users.xml
+        dest: /root/tomcat/conf/tomcat-users.xml
+
+    - name: modify context.xml file
+      template:
+        src: context.xml
+        dest: /root/tomcat/webapps/manager/META-INF/context.xml
+
+    - name: start the server
+      shell: nohup /root/tomcat/bin/startup.sh
+...
+
+
+--------------------------
+PROJECT  Ansible
+-------------------------
+Lets setup Tomcat using playbook;
+rm -rf *
+
+Goto https://dlcdn.apache.org/tomcat/tomcat-9/ in browser and check which is the current version of tomcat available and that version you change in the below yml file; 
+
+vim tomcat.yml ----> Paste the below;
+
+- hosts: test
+  tasks:
+    - name: download tomcat from dlcdn
+      get_url:
+        url: "https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.98/bin/apache-tomcat-9.0.98.tar.gz"
+        dest: "/root/"
+
+    - name: untar the apache file
+      command: tar -zxvf apache-tomcat-9.0.98.tar.gz
+
+    - name: rename the tomcat
+      command: mv apache-tomcat-9.0.98 tomcat
+      tags: abc
+
+    - name: install java
+      command: yum install java-1.8.0-openjdk -y
+
+    - name: setting the roles in tomcat-user.xml file
+      template:
+        src: tomcat-users.xml
+        dest: /root/tomcat/conf/tomcat-users.xml
+
+    - name: delete two lines in context.xml
+      template:
+        src: context.xml
+        dest: /root/tomcat/webapps/manager/META-INF/context.xml
+
+    - name: start the tomcat
+      shell: nohup /root/tomcat/bin/startup.sh
+
+----> esc ----> :wq ----> 
+
+Lets create tomcat-users.xml in local;
+vim tomcat-users.xml ---> Paste the below content --->
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<tomcat-users xmlns="http://tomcat.apache.org/xml"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+              version="1.0">
+<!--
+  By default, no user is included in the "manager-gui" role required
+  to operate the "/manager/html" web application.  If you wish to use this app,
+  you must define such a user - the username and password are arbitrary.
+
+  Built-in Tomcat manager roles:
+    - manager-gui    - allows access to the HTML GUI and the status pages
+    - manager-script - allows access to the HTTP API and the status pages
+    - manager-jmx    - allows access to the JMX proxy and the status pages
+    - manager-status - allows access to the status pages only
+
+  The users below are wrapped in a comment and are therefore ignored. If you
+  wish to configure one or more of these users for use with the manager web
+  application, do not forget to remove the <!.. ..> that surrounds them. You
+  will also need to set the passwords to something appropriate.
+-->
+<!--
+  <user username="admin" password="<must-be-changed>" roles="manager-gui"/>
+  <user username="robot" password="<must-be-changed>" roles="manager-script"/>
+-->
+<!--
+  The sample user and role entries below are intended for use with the
+  examples web application. They are wrapped in a comment and thus are ignored
+  when reading this file. If you wish to configure these users for use with the
+  examples web application, do not forget to remove the <!.. ..> that surrounds
+  them. You will also need to set the passwords to something appropriate.
+-->
+<!--
+  <role rolename="tomcat"/>
+  <role rolename="role1"/>
+  <user username="tomcat" password="<must-be-changed>" roles="tomcat"/>
+  <user username="both" password="<must-be-changed>" roles="tomcat,role1"/>
+  <user username="role1" password="<must-be-changed>" roles="role1"/>
+-->
+  <role rolename="manager-gui"/>
+  <role rolename="manager-script"/>
+  <user username="tomcat" password="tomcat" roles="manager-gui, manager-script"/>
+</tomcat-users>
+
+----> esc ----> :wq ----> 
+
+Lets create tomcat-users.xml in local;
+vim context.xml ---> Paste the below content --->
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<Context antiResourceLocking="false" privileged="true" >
+  <CookieProcessor className="org.apache.tomcat.util.http.Rfc6265CookieProcessor"
+                   sameSiteCookies="strict" />
+  <Manager sessionAttributeValueClassNameFilter="java\.lang\.(?:Boolean|Integer|Long|Number|String)|org\.apache\.catalina\.filters\.CsrfPreventionFilter\$LruCache(?:\$1)?|java\.util\.(?:Linked)?HashMap"/>
+</Context>
+
+----> esc ----> :wq ----> 
+
+Lets execute ----> ansible-playbook tomcat.yml ----> You can see it got executed.
+
+Copy the ip of test server 1 and paste in browser/8080 ----> click on 'manager apps' ---> Enter username and password ---->
+Copy the ip of test server 2 and paste in browser/8080 ----> click on 'manager apps' ---> Enter username and password ----> This is how we can do the automation
+
+Similarly you can do on dev servers also
+
+
+
+
+
+
+
+
+
+
+
