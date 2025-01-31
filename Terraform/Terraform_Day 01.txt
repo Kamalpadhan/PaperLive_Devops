@@ -1,0 +1,145 @@
+												Terraform_Day 01
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------DevOps Engineer ----> Launch 1 EC2 Instance ----> AWS ----> EC2 Console ----> Do the configurations ----> Launch VM (1-2 minutes)
+50 Instances ----> Manually we cannot do, its a time taking process
+
+DevOps Engineer ----> Create S3 Bucket ----> S3 Console ----> Do the configurations ----> Create a bucket (1-2 minutes)
+50 buckets ----> Manually we cannot do, its a time taking process
+
+Programmatic Approach ----> AWS CLI or use Scripting Language ----> Limited
+
+Cloud Service Providers
+	- AWS Cloud - Cloud Formation
+	- Azure Cloud - Azure Resource Manager
+	- GCP
+Using above cloud specific services, we can automate the creation of resources in the cloud.
+
+1 month - AWS - Cloud Formation ----> Real-time - Azure -
+It is not recommended to depend on cloud specific services to automate the creation of resources
+
+TERRAFORM
+It is an universal approach to create resources
+It is platform independent
+
+Why Terraform?
+Terraform is used to automate the creation of resources in a simplest and easiest way with faster delivery.
+
+Terraform is an open-source s/w created by HashiCorp Company
+Terraform is written by using GO Programming Language
+Terraform is an IaaC software (IaaC - Infrastructure as a Code)
+IaaC is the process of managing infrastructure in a file or files
+The file which is used to write the code to perform multiple operations in Cloud is known as "Terraform Script File"
+TSFs are written by using a language called HCL (HashiCorp Configuration Language), provided by Terraform
+
+Terraform Vs Ansible
+
+Terraform architecture
+Main intension of using terraform is to create the infrastructure (IaaC)
+We will write the scripts for terraform and these scripts will be stored in GitHub repo to create infrastructure
+Once the script is ready, plan that script execution by using 'plan' command. A plan will get created. Then Run the script by using 'apply' command. The script will get executed and the infrastructure will get created
+To create the script we will use HCL
+Terraform script files will have ".tf" extension
+
+
+Pre-requisites to use Terraform
+1. Create AWS Account
+2. IAM - IAM User - Access Key and Secret Access Key - Policies - We can access terraform
+
+Terraform Commands
+terraform init ---> To initialize the terraform
+terraform fmt ---> To format the terraform script
+terraform validate ---> To validate the terraform syntaxes
+terraform plan ---> To create execution plan for the script
+terraform apply ---> To create the infrastructure by running the script
+terraform destroy ---> To delete a resource(s)
+terraform state list ---> To see the list of resources created
+
+Working with Terraform
+1. Launch Instance (Amazon Linux 2 AMI, t2.micro)
+2.Create IAM User - Attach policies
+3. IAM User - Create Access Key and Secret Access Key
+4. Attach the keys to server
+5. Install terraform
+
+Terraform Installation Commands
+URL: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo yum -y install terraform
+
+terraform.tfstate ---> tracking information
+
+Task 1 - Create VM
+----------------------------
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "one" {
+  ami           = "ami-02972a2a0ac299bb7"
+  instance_type = "t2.micro"
+}
+
+Task 2 - Create 3 VMs
+----------------------------
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "one" {
+  count         =  3
+  ami           = "ami-02972a2a0ac299bb7"
+  instance_type = "t2.micro"
+}
+
+To delete a specific server out of many instances we will use 'terraform target' command
+Syntax: terraform destroy -target="aws_instance.one[0]"
+
+To auto-approve the destroying of specific instance(s)
+terraform destroy --auto-approve -target="aws_instance.one[0]" -target="aws_instance.one[1]"
+
+Terraform.tf state file
+------------------------------
+1. It is used to track the resource information which is created by using terraform
+2. It is also used to track the resource activities
+3. In real-time entire resource information will be available in state file
+4. We need to keep this file safely
+5. If we lose this file, we cannot track the infrastructure information
+
+VARIABLE BLOCK
+-----------------------------
+By using variable blocks we can define the details of instances
+
+lets say i want to give the variable as instance type. For this we will add a variable block in the script
+
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "one" {
+  ami           = "ami-02972a2a0ac299bb7"
+  instance_type = var.instance_type  # Corrected syntax
+}
+
+variable "instance_type" {
+  description = "EC2 instance type"
+  type        = string
+  default     = "t2.micro"  # Enclosed default value in quotes
+}
+
+
+Tasks:
+1. Create EKS Cluster using terraform and Jenkins(Video: https://www.youtube.com/watch?v=DV79JyFbQE8&list=PLs-PsDpuAuTfG3gFR5DnVD58kT7JBO97x&index=1&pp=gAQBiAQB)
+2. Create S3 Bucket in any region
+3. Create VPC in us-east-1 region with default values
+
+
+
+
+
+
+
+
+
+
+
