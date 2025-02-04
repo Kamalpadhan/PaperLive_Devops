@@ -1,0 +1,239 @@
+												Day 01_Kubernetes
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Git & GitHub		- Repository management tool
+Maven			- Build tool
+Jenkins			- CI & CD tool, PaaC (Pipeline as a Code)
+Docker			- Containerization platform
+Ansible			- Configuration management tool
+Terraform		- IaaC (infrastructure as a Code)
+Kubernetes		- Orchestration platform
+
+JENKINS + DOCKER + KUBERNETES
+
+Kubernetes is also called as K8S
+K8S is an o/s orchestration platform/engine
+Orchestration means management. 
+	- Docker containers
+To automate the management of containers, we have to use Orchestration engines.
+	- Docker Swarm - outdated
+	- K8S (Advanced version)
+K8S is used to manage the containers of our app. K8S will take care of container deployment, scaling, de-scaling and containers load balancers
+Scaling the containers in Docker-swarm is a manual process
+	App - 04/02 - 10 containers
+		- 06/02 - 7 containers
+		- 10/02 - 25 containers
+K8S is developed by using GO Programming Language. It is developed by Google.
+In the later days, K8S was donated to CNCF (Cloud Native Computing Foundation)
+K8S is free and o/s
+First version of K8S was released in the year 2015
+To know the latest versions of K8S ----> Kubernetes.io
+For production related deployments we will use K8S and it is highly recommended
+K8S will work with the help of Docker. Using K8S we will manage Docker Containers
+
+What is Cluster?
+K8S will run based on Cluster.
+Cluster is nothing but group of servers.
+One server we will call it as Master Node/Control Plane
+The remaining servers are called as Worker Nodes
+Cluster Architecture
+In Cluster Architecture we have a master node and worker nodes
+Master node acts as a manager. Worker nodes acts as team members
+
+Ex; Deploy an App. The deployment task i will give to master node. Master node will assign the task to worker nodes. Master node will manage the worker nodes. This is called as Cluster
+
+Docker server - Docker containers- App - Single point of failure
+
+In K8S we can have multiple master nodes also. This concept is called as High Availability
+
+-----------------------
+K8S Architecture
+-----------------------
+In K8S the most important component is Control Plane / Master Node
+In Control Plane we will have;
+	1. API Server
+	2. Scheduler
+	3. Controller Manager
+	4. etcd (Pronounced as eet cee dee)
+
+How to setup K8S Cluster?
+--------------------------------------------
+Note: 3000-6000 Rs of bill - Hourly bill will get generated
+
+K8S cluster setup can be divided into two ways;
+1. Self managed K8S cluster
+	1.1. Kubeadm - Multi-node cluster - rarely used / outdated
+	1.2. Minikube - Single node cluster - for beginners
+
+2. Managed K8S cluster - mostly used
+	2.1. AWS - EKS (Elastic K8S Service)
+	2.2. Azure - AKS
+	2.3. GCP - GKE
+	2.4. IBM - IKE
+
+Managed K8S Cluster will have High Availability
+when we use AWS-EKS cluster, control plane will never goes down
+
+To setup the EKS cluster we will use EKS-CTL
+Whenever we setup the EKS cluster, one control plane will get created and this will be completely managed by AWS. For this control plane, we will attach 2 worker nodes
+
+In order to create the control plane by using AWs,  i  will have to create Linux VM, i will call this as EKS-Server. 
+
+kubectl & AWS CLI
+
+Cluster Configuration File or Kube Config File - it container EKS cluster information
+
+IAM Role - VM
+
+
+TASK: YouTube Link to Automate the Creation of EKS Cluster by using Jenkins & Terraform
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Step - 1 : Create EKS Management Host in AWS
+Launch new Ubuntu VM using AWS Ec2 ( t2.micro )
+
+Connect to machine and install kubectl using below commands
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin
+kubectl version --short --client
+
+Install AWS CLI latest version using below commands
+sudo apt install unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+
+Install eksctl using below commands
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+Step - 2 : Create IAM role & attach to EKS Management Host
+Create New Role using IAM service ( Select Usecase - ec2 )
+
+Add below permissions for the role
+
+IAM - fullaccess
+VPC - fullaccess
+EC2 - fullaccess
+CloudFomration - fullaccess
+Administrator - acces
+Enter Role Name (eks-kastro-role)
+
+Attach created role to EKS Management Host (Select EC2 => Click on Security => Modify IAM Role => attach IAM role we have created)
+
+Step - 3 : Create EKS Cluster using eksctl
+Syntax:
+
+eksctl create cluster --name cluster-name
+--region region-name
+--node-type instance-type
+--nodes-min 2
+--nodes-max 2 \ --zones ,
+
+N. Virgina:
+eksctl create cluster --name kastro-cluster --region us-east-1 --node-type t2.medium  --zones us-east-1a,us-east-1b
+
+Mumbai:
+eksctl create cluster --name kastro-cluster --region ap-south-1 --node-type t2.medium  --zones ap-south-1a,ap-south-1b
+
+Note: Cluster creation will take 5 to 10 mins of time (we have to wait). After cluster created we can check nodes using below command.
+kubectl get nodes  
+
+Note: We should be able to see EKS cluster nodes here.**
+We are done with our Setup
+Step - 4 : After your practise, delete Cluster and other resources we have used in AWS Cloud to avoid billing
+eksctl delete cluster --name kastro-cluster --region ap-south-1
+
+-----------------------------------
+Kubernetes Components
+-----------------------------------
+Pod, Services, Namespaces, Replication Controller, Replication Set, Daemon Set, Deployment, Statefulset, Configmap & Secrets, Ingress Controller, K8S Volumes, HELM Charts, Monitoring the K8S Cluster using Prometheus & Grafana, ELK Setup, RBAC, K8S Web Dashboard
+
+1. PODS
+Pod is the smallest building block that we can create in the K8S cluster
+In K8S every container will be created inside the pod
+Pod always runs inside the worker node(s)
+Pod is a group of containers running on a node
+We can create multiple pods in a single node
+Every pod will have unique IP address
+All the containers in a pod will same same network namespace
+In single pods we can create multiple containers, but it is not recommended
+PODS are ephermal. They can die easily. So, whenever a pod dies, a new IP address will be created
+Pod is usually meant to run one app container
+
+How pods will communicate?
+K8S offers out of the box virtual network. Each pod gets its own IP address. So each pod can communicate with eachother using their internal IP address
+whenever a pod dies, a new IP address will be created and configuring the new IP address everytime is a complex process
+
+Pods can be created in 2 ways;
+	1. Interactive approach - using commands
+	2. Declarative approach - using YML files - preferred in real-time
+
+K8S Manifest File
+In Manifest tml, there are 4 sections available;
+	1. apiVersion
+	2. kind
+	3. metadata
+	4. spec
+
+Pod manifest yml file will start with --- and ends with ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
