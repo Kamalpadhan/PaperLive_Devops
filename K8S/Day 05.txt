@@ -1,0 +1,99 @@
+												Day 05 _Kubernetes
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+https://learn.kodekloud.com/user/courses/cka-certification-course-certified-kubernetes-administrator
+
+https://learn.kodekloud.com/user/courses/ultimate-certified-kubernetes-application-developer-ckad-mock-exam-series
+
+https://learn.kodekloud.com/user/courses/jenkins-project-building-ci-cd-pipeline-for-scalable-web-applications/module/d50cea6d-7bc8-43c6-82b6-40a89e1c9f77/lesson/bb914665-0a0b-4fb7-922a-32792690688c
+
+https://learn.kodekloud.com/user/courses/amazon-elastic-container-service-aws-ecs
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Config Map & Secrets
+=====================
+These are used to avoid the hardcoded properties in the application.
+For every app, we will have multiple environments (Dev, SIT, UAT, Pilot) - App testing
+Once the app testing is complete in all the above environments, then app will be deployed into the Prod Envi (Live)
+For every envi app properties will be different. So we shouldn't hardcode the app properties
+Config Map & Secret concepts are used to avoid the hard coded properties in the app
+Config Map is used to store data in the key-value format (non-confidential data)
+	username: Kastro
+	Password: Kastro123
+Config Map allows us to decouple the app properties from docker images
+When we create docker image for an application, the properties are also packaged as a part of docker image. Now i want to separate the prop and docker images i.e i want to loosely coupled the app properties, then we use ConfigMap, so that our app can be deployed into any envi without making any changes for our docker image
+
+ConfigMap will make our docker images as portable
+	Portable means we can deploy the docker image in any envi without bothering about the app properties
+
+For non-confidential data (usernames) we will use ConfigMap
+For confidential data (passwords) we will use Secret
+Secret is used to store confidential data in key-value format. Here we will store the data in encrypted format
+ConfigMap and Secret will make docker images as portable
+
+So when we are deploying the app into multiple envi then what about app properties?
+- in the GitHub repo what we will do is, we will keep our app in the GitHub, but in the app we dont keep the properties, we will keep dynamic properties. earlier we have kept the hardcoded proper which mean fixed values of the prop. Now we will keep dynamic properties which we will supply the values dynamically. with this dynamic properties i will create a war file. using this war file i will create docker image. In the docker image the properties wont be available
+this docker image if i want to deploy into the k8s cluster as a pod i need to cerate a configmap and secret. In configmap i will keep non-confidential data such as driver class, etc. In secret i will keep confidential data, then i will create the pod for which i will provide config map and secret as inputs
+Suppose if tomorrow you want to deploy the app in another envi then do i need to change the docker image? NOOOOO. In this i need to change only config map and secret. This is how we will supply the dynamic values
+The advantage of config map and secret is our app will read envi specific properties from config map and secret
+
+
+kubectl get configmap
+
+1. Creation of config map and secret
+2. DB deployment
+3. App deployment
+
+Steps:
+1. Create config map
+2. Create secret
+3. Deploy MySQL db container using confif map and secret data
+4. Verify DB is deployed or not
+5. Deploy app by reading config map and secret data for DB prop
+6. Test the app deployment
+
+
+How to read the data from ConfigMap?
+We have to write a yml to read the data from configmap yml
+	- to create the MySQL container i need the data from config map and secret
+
+
+
+
+
+
+K8S Volumes
+in docker, we have used docker volumes concept. The purpose of volumes is to store the data. To make our containers stateful we will use storage. 
+Similarly in K8S our pods are stateless. whatever the data that is generated in the app, i want to store the data permanently. For that in K8S we have a concept called PV - Persistent Volumes
+
+Stateful containers maintains our data permanently
+Stateless containers doesn't/ dont maintain the data permanently 
+
+PV & PVC
+Persistent Volumes
+Persistent Volumes Claim - storage related permissions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
