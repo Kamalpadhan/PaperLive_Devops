@@ -1,0 +1,475 @@
+												Day 07 _Kubernetes
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. Daemon Set
+2. HELM Charts
+3. K8S Monitoring
+4. ELK Stack
+-------------------
+Daemon Set
+-------------------
+Whenever we are deploying our app in the K8S cluster, we are giving pod replicas (Ex: 2,3,4,5,...). When we give pod replicas 1 or 2 or 3 ..., do we have any control about on which node our pods should be created? NOOOOO
+If you want to deploy 1 pod in each worker node, then we will go for Daemon Set concept
+Daemon Set is a K8S resource to create pods
+Daemon Set will create one pod in each worker node based on replica count
+In real-time Daemon Set is used for logs monitoring
+Daemon Set is used to setup ELK (E - Elastic Search, L - Logstash, K - Kibana)
+
+when to use daemon Set?
+	1. Logs collector
+	2. Node monitoring
+
+Logstash Pod - Logstash is a s/w which is deployed as a Daemon Set
+Metric Server - To deploy the metric se4rver we will use Daemon Set
+
+
+K8S Components
+RC - it maintains given no of pod count
+RS - similar to RC
+Deployment - for autoscaling - used to deploy stateless applications/containers
+Stateful Set - used to deploy stateful containers
+Daemon Set -to have control of creation of pods in each worker node
+
+RC:
+selector:
+	app: javawebapp
+
+RS:
+selector:
+	matchLabels:
+		app: javawebapp
+		version: apps/v1
+		type: backend
+
+
+---------------------
+HELM Charts
+---------------------
+Linux OS - package manager - yum
+Ubuntu OS - package manager - apt
+
+K8S - package manager - HELM
+if you want to install any s/w in K8S cluster we will use HELM s/w
+HELM manages K8S resource packages through charts which are known as HELM Charts
+	- A chart is a collection of yml files organized in a specific structure
+	- If you want to deploy an app. we have written multiple yml files. Instead of writing yml files, we can directly download HELM Charts
+The configuration information related to a HELM chart is managed in the 'configuration' section
+For every s/w one chart is available
+
+Official HELM Documentation: https://helm.sh/docs/helm/helm_install/
+
+Architecture of HELM:
+Whenever we want to install any s/w in the K8S cluster, first we need to install HELM client s/w in our cluster
+	- by using HELM client s/w we can download all the required s/w
+	
+
+Working with HELM
+------------------------------
+##################
+Helm Installation
+##################
+
+$ curl -fsSl -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+
+$ chmod 700 get_helm.sh
+
+$ ./get_helm.sh
+
+$ helm
+
+-> check do we have metrics server on the cluster
+To see which pod and which worker node is taking more memory;
+
+$ kubectl top pods
+#you will see "Metrics API not available
+
+$ kubectl top nodes
+#you will see "Metrics API not available
+
+It means, "Metrics API" s/w is not available. So we need to install Metrics API. Instead of downloading and installing "Metric API" manually, I will install MetricsAPI by using HELM.
+
+# check helm repos 
+$ helm repo ls
+
+# Before you can install the chart you will need to add the metrics-server repo to helm
+$ helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+#you will see "metric server has been added to your repo.s"
+
+# Install the chart
+$ helm upgrade --install metrics-server metrics-server/metrics-server
+
+Lets see which pod and which worker node is taking more memory;
+$ kubectl top pods
+#you may see error. Its not an issue, execute below command
+
+$ kubectl top nodes
+#you can see details of nodes such as memory, CPU%, etc...
+
+$ kubectl top pods
+
+$ helm list
+
+
+$ helm delete <release-name>
+
+
+=========================================
+Metric Server Unavailability issue fix
+=========================================
+URL : https://www.linuxsysadmins.com/service-unavailable-kubernetes-metrics/
+
+
+$ kubectl edit deployments.apps -n kube-system metrics-server 
+
+=> Edit the below file and add  new properties which are given below
+
+--------------------------- Existing File--------------------
+ spec:
+      containers:
+      - args:
+        - --cert-dir=/tmp
+        - --secure-port=4443
+
+--------------------------- New File--------------------
+---
+    spec:
+      containers:
+      - args:
+        - --cert-dir=/tmp
+        - --secure-port=4443
+        - --kubelet-insecure-tls=true
+        - --kubelet-preferred-address-types=InternalIP
+
+------------------------------------------------------------------
+K8S Monitoring
+------------------------------
+Car/Bike ---- 6 months - service
+in order to monitor our apps available in the K8S cluster, we have 3 types of monitoring tools
+	1. Grafana - GUI based
+	2. Prometheus - to receive the alerts
+	3. ELK/EFK - for app logs monitoring  
+
+
+Prometheus is an o/s systems monitoring and alerting toolkit
+Prometheus collects and stores its metrics as time series data
+Prometheus provides out of the box monitoring capabilities for K8S container orchestration platform
+Prometheus will monitor the app runining in the cluster and will collect the data from the cluster and it will give the data to Grafana. Grafana will provide the data in graphical format (piecharts, bar graphs..)
+Grafana is an analysis and monitoring tool
+it is an o/s analytics and interactive visualization web app
+It provides charts, graphs and alerts for the web when connected to the supported 'data source'
+
+#######################################################
+Install Prometheus & Grafana in K8S Cluster using HELM
+######################################################
+
+# Add the latest helm repository in Kubernetes
+$ helm repo add stable https://charts.helm.sh/stable
+
+# Add prometheus repo to helm
+$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+# Update Helm Repo
+$ helm repo update
+
+# install prometheus
+$ helm install stable prometheus-community/kube-prometheus-stack
+#Prometheus stack will install Prometheus and Grafana
+
+# Get all pods 
+$ kubectl get pods
+
+Note: You should see prometheus pods running
+
+# Check the services 
+$ kubectl get svc
+
+# By default prometheus and grafana services are available within the cluster as ClusterIP, to access them outside lets change it to NodePort / LoadBalancer.
+
+# Edit Prometheus Service & change service type from ClusterIP to LoadBalancer then save and close that file
+$ kubectl edit svc stable-kube-prometheus-sta-prometheus
+#You will see the manifest YML. This YML is written by HELM Chart only.
+#After editing the file, you will see a load balancer got created in the EC2 console.
+
+# Now edit the grafana service & change service type to LoadBalancer then save and close that file
+$ kubectl edit svc stable-grafana
+
+
+# Verify the service if changed to LoadBalancer
+$ kubectl get svc
+#you will see the Grafana loadbalancer url and Prometheus load balancer url
+
+=> Access Promethues server using LoadBalancer URL	
+
+			URL : http://<loadbalancer URL as seen in the Moba>:9090/	
+
+=> Access Grafana server using LoadBalancer URL
+
+			URL : http://<loadbalancer URL as seen in the Moba>/
+
+=> Use below credentials to login into grafana server
+
+UserName: admin
+Password: prom-operator
+
+=> Once we login into Grafana then we can monitor our k8s cluster. Grafana will provide all the data in graphs format.
+========================================================================================================
+ELK Stack
+
+E - Elastic Search - for storing logs
+L - Logstash - for shipping, processing and storing logs - json
+K - Kibana - visualization tool 
+ELK stack is a collection of 3 open-source products
+
+E - Elastic Search
+F - Fluentd
+K - Kibana
+
+ELK provides centralized logging in order to identify problems with servers or applications
+It allows to search all logs in single places
+When developers are developing any project, developers will implement 'logging' feature in the app
+	- logging means when app is getting executed, application will generate messages and it will store those messages inside 'log file'
+Once the log messages are stored in the log file, in future if any problem occurs in the project, developers will connect to the log file and will monitor the logs of app
+In order to monitor the logs of app, in some companies people will use MobaXTerm or WinSCP or ELK or Splunk
+	- splunk is advanced and it is premium charged
+
+Pending Concepts;
+1. Autoscaling
+2.Setup Web Dashboard to communicate with K8S Cluster
+3.Ingress
+4. Blue-Green Deployment 
+
+Assignment
+1. BMS Application - GitHub, Jenkins, SonarQube, OWASP, Trivy, Docker, EKS Cluster, Monitoring (Prometheus & Grafana)
+GitHub Repo: https://github.com/KastroVKiran/Book-My-Show.git
+
+
+
+1. Ecommerce Application
+2. Ansible project
+3. Microservice Application
+#############################
+EFK Installation using HELM
+#############################
+Pre-requisites:
+EKS Cluster
+Nodes: 4GB RAM
+Client VM with Kubectl and HELM Configured
+
+kubectl get nodes
+#You will see 2 worker nodes
+
+#Lets create a namespace
+kubectl create ns efk
+
+kubectl get ns
+
+#Lets add 'elastic' to the helm repo.
+helm repo add elastic https://helm.elastic.co
+
+helm repo ls
+
+Lets download 'elasticsearch.values' file
+helm show values elastic/elasticsearch >> elasticsearch.values
+
+ls -l 
+
+Lets configure replicas as 1 and masternodes as 1 in 'elasticsearch.values' file
+vi elasticsearch.values
+Change "replicas as 1 and masternodes as 1"
+
+Lets install 'elasticsearch' using modified values in 'efk' namespace which we have created earlier
+helm install elasticsearch elastic/elasticsearch -f elasticsearch.values -n efk
+#You can see Status as 'Deployed'
+
+helm ls -n efk
+#here 'efk' is our namespace
+
+Lets see the resources which got created in the 'efk' namespace
+kubectl get all -n efk
+
+helm show values elastic/kibana >> kibana.values
+#Kibana is used to monitor the logs in the UI
+
+vi kibana.values
+#Scroll down till you see service type as "ClusterIP." Since we want to access the Kibana outside of cluster i.e in browser, we need to change the service type as "Load Balancer"
+Change the service type as "Load Balancer"
+
+Lets install Kibana in 'efk' namespace
+helm install kibana elastic/kibana -f kibana.values -n efk
+
+kubectl get all -n efk
+
+helm install filebeat elastic/filebeat -n efk
+
+helm install metricbeat elastic/metricbeat -n efk
+
+Access Kibana using LoadBalancer DNS
+
+
+
+
+#############################
+EFK Installation using HELM
+#############################
+
+#Lets create a directory to make the configuration and installation files related to EFK
+mkdir efk-demo
+
+cd efk-demo
+
+Elastic Search Installation
+----------------------------------
+#Lets create a namespace as "logging"
+kubectl create ns logging
+
+kubectl get ns
+
+Elastic Search will be installed as a StatefullSet and for that storage is required. So, we will create a storage class now.
+vi storageclass.yml
+Copy and paste the content below
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata: 
+	name: dev-storage-class #class name
+	namespace: logging
+provisioner: kubernetes.io/hostpath
+ 
+kubectl apply -f storageclass.yml
+
+#to check whether storage class got created or not
+kubectl get sc
+
+#Lets create a Persistant Volume manifest file using above storage class  and namespace and then apply it
+apiVersion: v1 
+kind: PersistentVolume
+metadata: 
+	name: elasticsearch-master
+	namespace: logging
+	labels:
+		app: elasticsearch-master
+spec:
+	capacity:
+		storage: 4Gi
+	accessModes:
+		- ReadWriteOnce
+	storageClassName: dev-storage-class
+	persistantVolumeReclaimPolicy: Retain
+	hostPath:
+		path: /tmp/
+
+vi pv.yml
+
+copy and paste the above yml content
+
+kubectl apply -f pv.yml
+
+lets check whether PV got created in the namespace or not
+kubectl get pv -n logging
+#You can see 'elastic-search master'
+
+Lets download and extract elastic search 
+Command to download: wget https://helm.elastic.co/heml/elasticsearch/elasticsearch-7.17.1.tgz
+Command to extract: tar -xvf elasticsearch-7.17.1.tgz
+
+ls -l
+
+Lets go inside the 'elasticsearch' directory and edit the the values.yml file  to include the stoarge class  and also to verify  the volume  is within the raneg of volume we created in the above step.
+
+cd elasticsearch
+
+ls -l
+#You can see values.yml file
+
+vi values.yaml
+
+change replicas and minimum masternodes as 1
+Scroll down to see "volume claim template"
+In the next line of "access modes", type the below
+storageClassName: "dev-storage-class"
+
+change the storage as 5Gi instead of 3Gi
+
+save and exit from yml file
+
+Lets install elasticsearch with the modified content in values.yaml file
+helm install elasticsearch-repo . -f values.yaml -n logging
+#with this we have installed 'elasticsearch' under the namespace 'logging'
+
+
+Fluent-Bit Installation
+----------------------------------
+cd ..
+#You will now be pointing to "efk-demo" directory
+
+wget https://github.com/fluent/helm-charts/releases/download/fluent-bit-0.21.0/fluent-bit-0.21.0/fluent-bit-0.21.0.tgz
+
+ls -l
+
+tar -xvf fluent-bit-0.21.0.tgz
+
+ls -l 
+
+cd fluent-bit
+
+ls -l
+#You can see values.yaml file
+
+helm install fluent-bit . -f values.yaml -n logging
+
+#with this fluentbit installation is completed
+
+Kibana Setup
+----------------------------------
+cd ..
+#you will be pointing to efk-demo
+
+Lets download and extract Kibana
+wget https://helm.elastic.co/helm/kibana/kibana-7.17.3.tgz
+
+tar -xvf kibana-7.17.3.tgz
+
+ls -l
+#You will see Kibana directory
+
+Lets go inside Kibana directory and edit "values.yaml" file and change Service type as Load Balancer
+cd kibana
+
+ls -l
+#You will see "values.yaml" file
+
+vi values.yaml
+#Scroll down till you see Service type as Cluster IP and change that to LoadBalancer
+
+helm install kibana . -f values.yaml -n logging
+#here "logging" is the namespace name
+
+kubectl get svc -n logging
+#You will see the details
+#You will see "kibana-kibana" as the fourth one with Type as 'LoadBalancer' and the URL of the LoadBalancer under the "External-IP"
+
+kubectl get pods -n logging
+
+Copy the load balancer URL and paste in browser. You will see the Kibana dashboard.
+#If you dont see the homepage; by default kibana will run on port no. 5601. Enable Port No. 5601 for the loadbalancer that got created in the LoadBalancer console in AWS.
+
+
+========================================
+REQUEST
+========================================
+LinkedIn - Share your experience about DevOps classes and also the projects which we have discussed in the sessions and also the projects which are available on the youtube using a LinkedIn Post
+Please make sure to tag me 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
