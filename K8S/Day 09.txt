@@ -1,0 +1,152 @@
+												Day 09 _Kubernetes
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. Ingress
+2. Blue Green Deployment
+
+
+DevOps Interview Preparation: https://github.com/KastroVKiran/DevOps-Interview-Preparation.git
+
+Ingress is a K8S component which is used to map external URLs to K8S Cluster Services
+To expose our pods outside the cluster we will use K8S Service (Cluster IP, Node Port, Load Balancer) Concept
+
+Swiggy
+Zomato
+
+Swiggy - Burger, Non-Veg, veg, Snacks
+
+www.swiggy.com ---> Home Page
+www.swiggy.com/Burger ---> Burger Page
+www.swiggy.com/Non-Veg ---> Non-Veg Page
+
+INGRESS Concept
+Ingress is used to map external URLs to the microservices of application which are running in the K8S cluster
+We have to run services as Cluster IP only
+Ingress will act as a mediator b/w users and cluster services
+
+
+BMS Server -----> Jenkins ----> Single Pipeline ----> All microservices related 
+BMS Server -----> Jenkins Master Node
+Jenkins Slave Nodes ---> Burger --- 
+					Biryani --
+
+Ingress Setup
+#################
+
+# Clone the below repo to setup ingress
+$ git clone https://github.com/KastroVKiran/K8S_Ingress.git
+
+$ cd K8S_Ingress
+Note: Ingress can be setup either using Daemon Set or Deployment
+
+# Create namespace and service-account
+$ kubectl apply -f common/ns-and-sa.yaml
+
+# Create RBAC (to manage the roles) and ConfigMap
+$ kubectl apply -f common/
+
+# Deploy Ingress controller 
+
+-> We have 2 ways to deploy ingress controller 
+
+1) Deployment
+2) DaemonSet ( Preferred)
+
+#Here im installing Nginx controller
+$ kubectl apply -f daemon-set/nginx-ingress.yaml
+
+# Get ingress pods using namespace
+$ kubectl get all -n nginx-ingress
+
+# Create LBR service for Ingress
+$ kubectl apply -f service/loadbalancer-aws-elb.yaml
+
+Note: It will generate Load Balancer DNS. Go to EC2 and check for load balancer.
+
+-> Lets Map Load Balancer DNS Name to Route 53 domain 
+Goto Route 53 ---- Click on the Hosted Zone ---- Click on the Domain Name ---- Create Record ---- Enable Alias ---- Select "Alias to Application and Classic Load Balancer" ---- Select "Mumbai Region" ---- Select "the load balancer created above" ---- Create records ---- View Status ---- Wait till you see the status as "INSYNC" ---- Here domain name is mapped to ingress load balancer.
+
+Enter just the domain name (civiledu.org) in new tab. You will see error. Why? This ingress doesnt know which request should go to which service in the cluster. Currently in our cluster we have 2 services (apart from the default service)  ---- kubectl get svc
+
+So here we need to do path based routing. Currently we have the ingress load balancer. I will tell that, if path is /java-web-app, i will ask to direct to javawebappsvc. if path is /maven-web-app, i will ask to direct to mavenwebappsvc. This is called path based routing.
+
+Inorder to do the path mapping, we need to create an ingress rule file.
+
+-> Lets create Ingress kind with rules 
+
+============================
+Path Based Routing
+============================
+
+$ vi ingress-rules.yml
+
+Copy and paste the below content
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-resource-2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: civiledu.org
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/java-web-app"
+        backend:
+         service:
+          name: javawebappsvc
+          port: 
+           number: 80
+      - pathType: Prefix
+        path: "/maven-web-app"
+        backend:
+         service:
+          name: mavenwebappsvc
+          port: 
+           number: 80
+...
+
+kubectl  apply -f ingress-rules.yml
+
+kubectl get all
+kubectl get pods
+
+lets test whether ingress is working or not
+
+Open new tab in browser ---- learnwithkastro.org/java-web-app/ ---- You will the java based app. ----- civiledu.org/maven-web-app/ ---- You will the maven based app. 
+
+
+------------------------------------
+BLUE-GREEN Deployment
+------------------------------------
+Deployment of app can be made in 2 ways;
+1. Canary deployment  - Not preferred
+2. B-G deployment - Preferred
+
+Blue envi		- older version of code
+Green envi 	- newer version of code
+
+Swiggy App ---- Version 10.01
+
+Developers ---- Update --- version 10.02
+
+
+10 mins - downtime - Jenkins 
+1 Pipeline - Blue - Prod
+2nd pipeline - Green - Trigger - 5 hrs - prod (updated code)
+
+Jenkins - Build with parameters - choice parameter: blue, green
+
+
+
+
+
+
+
+
+
+
+
+
+
