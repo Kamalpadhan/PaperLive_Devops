@@ -1,0 +1,113 @@
+												  Python for DevOps
+												Python using ChatGPT
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Why Python for DevOps Engineers?
+
+Shell Scripting is mostly suitable for Linux OS only
+Python will work both for Linux OS and Windows OS
+
+When you want to write complex scripting, interact with APIs, perform data manipulations then we will use Python
+
+Python is a high-level programming language
+Python is versatile and dynamically typed
+Python is a general purpose language
+Introduced in 1991 by Guido Van Rossum
+
+Features of Python;
+Platform Independent
+Most widely used programming language
+It has large community
+It has rich libraries - pandas, numpy, etc...
+Easy to learn and read
+It is a multi-purpose language
+Python code doesn't require compilation
+
+JAVA Code - Web App
+JVM - Compile (.java ---> .class) - Build the artifact (.jar or .war)
+
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+
+
+PYTHON Code
+print("Hello, World!")
+
+-----------------------------
+Installation of Python
+-----------------------------
+1. Create a server and install python - work with python
+2. Install Python locally - Install IDE
+3. GitHub - 60 hrs/month
+4. Google Colab
+
+All the python files will have an extension as .py
+---------------------
+Python Datatypes
+---------------------
+Python File (Kastro.py) --- Text, Numbers, Special Characters...
+Everything that is available in a python file is considered as "DATA" by interpreters
+
+Datatypes in Python;
+String/List of Characters
+Numeric (Int, Float, Complex)
+Sequence (String, List, Tuple)
+Mapping (Dict)
+Boolean (True/False)
+Binary types
+None type
+Custom Data Type
+
+How does a compiler understand what datatype is there in the Python file?
+	- The only way how Compiler understand the datatype is by using SYNTAX
+
+In Python 'indentations' or 'whitespaces' are very important
+
+
+Single line comment and multi line comment
+
+Single line comment - put # at the beginning of a line
+
+Multi line comment - put """ at the beginning and ending
+
+Variables
+
+Numeric
+	1. INT		- Ex: 1,2,3,4,5,6,100,0
+	2. Float		- Ex: 1.1, 2.99, 3.1998877
+
+String
+name="Kastro"
+name='Kiran'
+
+xyz = 'This is Kastro - DevOps Trainer' OR "This is Kastro - DevOps Trainer"
+xyz = "You are all Kastro's DevOps Student's"
+
+
+Lets say i have 3 lines of string;
+'''
+This is Kastro
+Im DevOps Trainer
+I'm a PhD Scholar
+'''
+
+"""
+This is Kastro
+Im DevOps Trainer
+I'm a PhD Scholar
+"""
+
+Boolean - True or False
+
+
+SHELL SCRIPTING COURSE: https://github.com/KastroVKiran/ShellScriptingforDevOpsEngineering.git
+
+
+
+
+
+
+
+
