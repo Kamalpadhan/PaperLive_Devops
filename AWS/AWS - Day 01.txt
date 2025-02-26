@@ -1,0 +1,112 @@
+												AWS - Day 01
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Total Duration: 35-40 Hours
+Course: Amazon Web Services (AWS)
+Timings: 8.00 - 10.00 PM*
+
+Modules;
+1. Introduction to the Course
+2. Introduction to the Cloud Computing
+3. Storage Layer - S3
+4. Compute Layer - EC2
+5. Database Layer - RDS
+6. Network Layer - VPC
+7. User Management Layer - IAM
+8. Cloud Watch, Data Sync, SNS, Cloud Front, Cloud Trial
+9. DNS, Route 53
+10. Hybrid Storage - AWS Storage Gateway, File Gateway
+11. ECR, ECS
+12. Code Pipeline, Code Build
+13. Security Hub, AWS Config, AWS Backup, Systems Manager, Secrets Manager
+
+Projects;
+1. AWS 3 Tier Architecture
+2. Build and Deploy Wordpress Website
+3. Deploy NodeJS App
+
+
+Cloud Service Providers; 
+	- AWS (Amazon Web Services) - 70%
+	- MA (Microsoft Azure) - 25%
+	- GCP (Google Cloud Platform) - 5%
+	- IBM Cloud
+	- Salesforce, VM Ware
+
+Why the organizations has switched to the Cloud?
+
+
+What is Cloud Computing?
+Cloud computing is a term referred to storing and accessing data over the internet (The Cloud). 
+
+On Premises Vs Virtual Servers
+The servers which are available a physical location is known as "ON-PREMISES"
+The servers which are launched using cloud service provider AWS,GCP, Azure) is known as "VIRTUAL SERVERS"
+
+Cloud Service Providers;
+AWS, GCP, Azure, IBM, VM Ware, Sales force, Alibaba Cloud...
+To work with any cloud service, we need to have an account
+
+Account creation - credit/debit, valid email id, password
+
+Why companies are using the Cloud?
+XYZ ----> Netflix ----> Regular days: 1L requests/second ---> On offer days: The traffic will get increased and you may need servers to handle the additional traffic ---> Purchase them and then you have to use. Since they are all physical servers, you cannot resale them and you cannot keep them idle. Here the major problem with Physical Servers is its maintenance and autoscaling
+Cloud will take care of every  you neeed to pay for what you have used
+
+Cloud Models;
+1. Service based models - IaaS (Infrastructure as a Service), PaaS (Platform as a Service), SaaS (Software as a Service)
+2. Deployment based models - Public, Private, Hybrid, Community Cloud
+
+IaaS - All the underlying infrastructure will be provided by the cloud service provider. 
+		Customer - The OS, Runtime, App, Data
+			Ex: The builder will provider only the flat not the infrastructure 
+					Ex: EC2
+
+
+PaaS - Along with infrastructure, facilities will also be provided
+		Ex: Studio Apartment (House + Furniture - TV - Samsung)
+			Ex: RDS, Elastic Beanstalk, DynamoDB
+
+
+SaaS - Hotel Suite Room
+
+AWS is a combination of IaaS, PaaS and SaaS
+
+Public Cloud - anybody can access
+Private Cloud - only few people can access
+Hybrid Cloud - partly public and partly private
+Community Cloud - IBM Cloud
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
