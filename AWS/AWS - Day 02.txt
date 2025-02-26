@@ -1,0 +1,149 @@
+AWS Global Infrastructure
+
+1. Regions
+	- Geographical location
+2. Availability Zones
+	- AZ is a collection of Datacentres
+	- Each region will have its own AZs
+	- The distance b/w each AZ is maintained at a minimum of 100 km
+	- Each region will have atleast 3 AZs and a maximum of 6 AZs
+
+The oldest region is N. Virginia - 2006 - its the first region launched by AWS
+Singapore is the oldest region in Asia Pacific - 2010
+Mumbai was launched in 2016
+N. Virginia has 6 AZs
+Mumbai & Hyderabad is having 3 AZs
+As of 2024 we have 33 regions in AWS
+As of 2024 we have 105 AZs in AWS
+
+China has its own dedication region in AWS. This is only for Chinese
+
+Whenever AWS launches any new service, it will first launch in N.Virginia region
+
+Every region in AWS will have its own region code
+	Mumbai - ap-south-1
+		AZ1 - ap-south-1a
+		AZ2 - ap-south-1b
+		AZ3 - ap-south-1c
+
+	Hyderabad - ap-south-2
+		AZ1 - ap-south-2a
+		AZ2 - ap-south-2b
+		AZ3 - ap-south-2c
+
+	N.Virginia - us-east-1
+		AZ1 - us-east-1a
+		AZ2 - us-east-1b
+		AZ3 - us-east-1c
+		AZ4 - us-east-1d
+		AZ5 - us-east-1e
+		AZ6 - us-east-1f
+
+Accessing the AWS Account
+3 ways;
+	1. Console Access - 99%
+	2. CLI Based - 1%
+	3. Programmatic Access
+
+
+Service 1: Simple Storage Service (S3)
+S3 is one of the storage services available in AWS Cloud
+S3 is the second service launched by AWS in 2006, March 14
+SQS (Simple Queue Service) is the first service launched by AWS in 2004
+S3 is used to store the data in the cloud
+
+S3 Features;
+Scalability - We can store any size of data (0 Bytes to PB) - Charges are applicable
+Availability - At any given point of time, we can access our data stored in the AWS Cloud
+Internet Access - To access the data in the cloud, it is mandatory to have internet connection
+Latency - HDD (Data transfer speed is slow - low cost, Storage - high), SSD (Data transfer speed is very high - high cost, Storage - low)
+			- S3 is SSD type
+			- Low latency - high speed
+			- High latency - low speed
+
+Mumbai - 3 AZs (Uploading the data - ap-south-1a) - Based on the number of AZs in a region, AWS will maintain those many copies of the data
+				Kastro.txt (ap-south-1a) -----> Kastro.txt (ap-south-1b), Kastro.txt (ap-south-1c)  
+AWS will give us High Availability feature 
+
+S3 - Free tier - Storage: 5GB
+Maximum size of an S3 bucket - 5TB
+
+S3 Terminology;
+Buckets - Bucket is nothing but a folder
+Objects - Object is nothing but a file
+
+100 Buckets can be created for each AWS Account
+
+In AWS we have all the services comes under two categories;
+	1. Global service
+	2. Region specific service
+
+S3 is GLOBAL service, but the Buckets created are region specific.
+Whenever we are creating an S3 bucket, the bucket name must be GLOBALLY UNIQUE
+Account 1 - Kastro - S3 - Bucket name: Kastro
+Account 2 - Kiran - S3 - Bucket name: Kastro
+
+Whenever we upload any object into S3 bucket, each object will get its own URL which is known as Object URL. If you want to access the objects, we should use Object URL only.
+
+Before deleting a bucket (which has some files), first delete the Objects and then only we can delete the bucket
+
+In S3 we can create two types of buckets;
+1. General purpose buckets - generally used
+2. Directory buckets
+
+By default, whenever we upload any object into the S3 bucket, they will be in PRIVATE Mode
+
+Create bucket
+Upload object
+Explore the options of bucket and object
+Access the object using Object URL - you cannot access the object
+
+Making an object publicly accessible;
+1. Enable ACL (Access Control List)
+2. Turn off Block All Access
+3. Make object using ACL
+
+Deleting the object
+Deleting the bucket
+
+Static Website Hosting using S3 Service;
+-----------------------------------------------------
+Types of websites;
+	1. Static website - thehindu.com ---- Hyderabad, Chennai, Pune, USA, Australia
+	2. Dynamic website - Instagram.com/Kastro, Instagram.com/Praveen, Instagram.com/Kiran
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
