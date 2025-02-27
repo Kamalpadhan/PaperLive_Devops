@@ -1,0 +1,185 @@
+Topics:
+1. Storage Classes
+2. Life cycle management - Theory & Demo
+3. S3 Versioning - Theory 
+
+
+
+1. Storage Classes
+Mumbai - 3 AZs
+
+Bucket ---- 1 object --- 3 copies of the same object are available in the backend of AWS infrastructure
+- who told?
+- Storage Classes
+In S3, we have 7 storage classes. These 7 storage classes are divided into 4 categories;
+- Frequently Accessed
+- Infrequently Accessed
+- Archival
+- Intelligent Tier (Combination of Frequently Accessed & Infrequently Accessed)
+
+Storage Classes:
+1. Standard - FA - Default storage class (100 Rs)
+	No of copies is dependent on No. of AZs in a region
+	File format will be same as original file format (.txt ----> .txt)
+2. Reduced Redundant Storage (RRS) - FA - Every year 1.5% of the files will be lost automatically (90 Rs)
+	Mumbai - 1 file (ap-south-1a) - backend - (ap-south-1b) (ap-south-1c)
+	After 1 year -   
+	File format will be same as original file format (.txt ----> .txt)
+	RRS is not recommended by AWS
+		Ex: App ---> App Logs
+3.  Intelligent Tier - IFA - AWS itself defines whether a file is FA or IFA - ML Algorithms (80 Rs)
+	No of copies is dependent on No. of AZs in a region
+	File format will be same as original file format (.txt ----> .txt)
+4. Standard IA  (70 Rs)
+	No of copies is dependent on No. of AZs in a region
+	File format will be same as original file format (.txt ----> .txt)
+5. One Zone IA - Data will be stored only in 1 AZ  (50 Rs)
+	File format will be same as original file format (.txt ----> .txt)
+6. Glacier  (70 Rs)
+	Original file format will get changed in the backend - ZIP format
+	100 Files (100 MB) ----> ZIP File (80 MB)
+	No of copies is dependent on No. of AZs in a region
+7. Glacier Deep Archival  (60 Rs)
+	Original file format will get changed in the backend - ZIP format
+	100 Files (100 MB) ----> ZIP File (50 MB)
+	No of copies is dependent on No. of AZs in a region	
+
+
+COST increases from top to bottom
+
+						Download Charges/					File download time					Min. Storage Charges
+						Retrieval Fees
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Standard					No charges						Immediately (Fast)					Pay as you use
+RRS						No charges						Immediately (Fast)					Pay as you use
+Intelligent					No charges						Immediately (Fast)					Pay as you use
+Standard IA				Charges							Immediate						28 days charges
+One Zone IA				Charges							Immediate						28 days charges
+Glacier					Too costly						5 mins - 12 hours					90 days charges
+Glacier Deep Archival		Too costly (>>)					12 hours							180 days charges
+
+
+App --- 1 Lakh files on every day ---- IA - 1 week before ----> Glacier or Glacier Deep Archival
+
+
+Life Cycle Management
+---------------------------------------
+
+Bucket - Object - Standard - pay-as-you-use
+
+Client - App - 1 Lakh files/day
+
+first 6 months (Jan - Jun) -----> Access the files frequently
+second 6 months (July - Dec) -----> May Access/May not Access
+third 3 months (Jan - Mar) -----> Infrequently 
+last 3 months (April - July) ----> Infreqeuntly accessed but whenever client request the files, immediately the files should be available
+During August -----> Delete them
+
+
+If during the entire duration, if the files are stored in STANDARD storage classes, What is the cost?
+1 File - 100 MB (10 Rs/file)
+6 months - Standard - 6 x 10 = 60 Rs
+6 months - Standard - 6 x 10 = 60 Rs
+3 months - Standard - 3 x 10 = 30 Rs
+3 months - Standard - 3 x 10 = 30 Rs
+---------------------------------------------------
+						180 Rs
+
+As a cloud engineer we need to optimize the cost by changing the storage classes in an automated way 
+
+1 File - 100 MB (10 Rs/file) FA - 10, IFA - 6
+6 months - Standard - 6 x 10 = 60 Rs
+6 months - Intelligent - 6 x 8 = 48 Rs
+3 months - Standard IA - 3 x 6 = 18 Rs
+3 months - Glacier - 3 x 2 = 6 Rs
+---------------------------------------------------
+						134 Rs
+
+Two types of configurations;
+1. Transition policy - if we want to change the file from one storage class to another storage class, then we will create Transition Policy
+2. Expiration policy - if we want to delete the file after a specific duration, then we will create Expiration Policy
+
+Note: The transition always happens from top to bottom
+
+
+----------------------
+S3 Versioning
+----------------------
+Bucket - 
+Case 1:
+Uploaded an Object (demo.txt) - 10.00 PM - This is AWS Classes
+Uploaded an Object (demo.txt) - 10.01 PM - This is AWS Classes
+Scenario 1: data deletion and over-writing of existing file will happen
+File Name and Data inside the file are same
+
+Case 2:
+Uploaded an Object (demo.txt) - 10.00 PM - This is AWS Classes
+Uploaded an Object (demo.txt) - 10.01 PM - This is S3 Classes
+Scenario 1: data deletion and over-writing of existing file will happen
+File name is same, but data inside the files are different
+Scenario 2: data deletion and over-writing of existing file will happen
+
+S3 Versioning helps us to maintain multiple versions of same object in one bucket so that you can restore objects that are accidentally deleted
+
+V Kiran --- Bucket ---- kiran.txt ---- 10.00 PM - This is Java Code
+K Kiran --- Bucket ---- kiran.txt ---- 10.05 PM - This is Python Code
+
+To preserve all the files which have same name and their versions, we have to enable VERSIONING for the bucket
+By default, the versioning for a bucket is DISABLED
+
+S3 Versioning - States for a bucket
+1. Unversioned bucket		- for a bucket if versioning is disabled		- NULL
+2. Versioning enabled		- for a bucket if versioning is enabled		- whatever object that is uploaded into the versioning enabled bucket, 																   every object will get its own VERSION ID (Alpha-Numeric)
+3. Versioning suspended		- for a bucket if versioning is suspended
+
+10.00 - Disabled
+11.00 - Enabled
+02.00 - Suspend - kiran.txt (Person 1), kiran.txt (Person 2)
+
+In how many ways we can enable versioning for a bucket?
+1. During the creation of bucket
+2. After the creation of bucket
+
+Whenever we enable versioning for a bucket, a toogle bar will be available for that bucket
+If you want to see the multiple versions of the same object we need to enable the toogle bar
+If the toogle bar is disabled, we will only see the latest version of the file
+For an object when it is uploaded during versioning enabled, if we accidentally delete any object, we can recover them
+For all the deleted objects, when versioning was enabled, the type of the object is shown as "DELETE MARKER"
+
+If you want to suspend the versioning, open the bucket, go inside the "Properties" tab.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
