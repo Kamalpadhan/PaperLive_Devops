@@ -1,0 +1,77 @@
+													Day 04_AWS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. S3 Versioning - Demo
+2. Recovering a Deleted File
+3. S3 Replication Setup
+4. Data Sync
+5. S3 Requester Pays 
+6. S3 Transfer Acceleration
+7. Working with AWS CLI
+8. S3 Object Lock
+9. S3 Access Points
+
+Before enabling versioning
+1st time ----> Kastro.txt ----> Amazon Web Services (20:17:49)
+2nd time  ----> Kastro.txt ----> AWS (20:19:37)
+3rd time  ----> Kastro.txt ----> Amazon Web Services (20:22:28) - NULL
+
+After enabling versioning
+4th time  ----> Kastro.txt ----> Microsoft Azure (20:27:33)
+5th time  ----> Kastro.txt ----> GCP (20:31:53)
+
+Kastro.txt
+ - Kastro.txt
+ - Kastro.txt
+ - Kastro.txt
+
+20:38:01 - Z.6QzJp1QJhsg2akYW.3OcNNdgmD6Ifo
+
+
+3. S3 Replication Setup
+If you want to copy the files from one bucket to another bucket then we will use REPLICATION concept
+
+Ways of replications;
+1. 2 buckets in same region and same account
+2. 1 bucket is in one region and another bucket is in another region, but both buckets are in same account
+3. Both buckets are in different account
+
+1. Bucket1 --- 1 file -- STANDARD
+2. Bucket2 --- GLACIER
+
+
+Note: When we want to replicate the objects from one bucket to another bucket, then it is mandatory to enable versioning for both buckets
+
+4. Data Sync
+When we have large size of files (GB/PB...), and when you want to replicate those large files into another bucket, we need to use DATA SYNC service
+
+5. S3 Requester Pays 
+
+6. S3 Transfer Acceleration
+
+7. Working with AWS CLI
+CLI - Command Line Interface
+1. Install CLI in local system
+2. Create IAM User - Generate Access and Secret Access Keys
+3. Configure AWS
+4. Work with commands
+
+
+To configure AWS ----> aws configure
+To see the list of buckets --- aws s3 ls
+To create a bucket ---- aws s3 mb s3://<BucketName>
+To upload an object into the bucket ---- aws s3 cp <LocalFilePath> s3://<BucketName>/<ObjectName>
+To delete an object inside a bucket --- aws s3 rm s3://<BucketName>/<ObjectName>
+To delete the bucket which contains objects --- aws s3 rb s3://<BucketName> --force
+
+
+
+8. S3 Object Lock - https://www.youtube.com/watch?v=6WCFSojNMKE&list=PLs-PsDpuAuTdOcZa-DDgG8KRbtMI_XRrC&index=11&t=21s&pp=gAQBiAQB
+9. S3 Access Points - https://www.youtube.com/watch?v=nSZ13PG_Oe8&list=PLs-PsDpuAuTdOcZa-DDgG8KRbtMI_XRrC&index=15&t=7s&pp=gAQBiAQB
+
+
+
+
+
+
+
+
