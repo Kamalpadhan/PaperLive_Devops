@@ -1,0 +1,56 @@
+													Day 05_AWS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+S3 Object Lock - https://www.youtube.com/watch?v=6WCFSojNMKE&list=PLs-PsDpuAuTdOcZa-DDgG8KRbtMI_XRrC&index=11&t=21s&pp=gAQBiAQB
+
+S3 Access Points - https://www.youtube.com/watch?v=nSZ13PG_Oe8&list=PLs-PsDpuAuTdOcZa-DDgG8KRbtMI_XRrC&index=15&t=7s&pp=gAQBiAQB
+
+S3 Security
+
+Bucket Policy
+Works at Bucket level
+Bucket policy is available in JSON (Java Script Object Notation) format
+
+Syntax;
+{
+	"version:"
+	"statement:"
+			[ {
+				"Effect:"
+				"Action:"
+				"Principal:"
+				"Resource:"
+			} ]
+}
+
+Effect: Allow/Deny
+Action: Upload, Download, Delete, Create a bucket,.....
+		s3: Get Object, s3: Put Object....
+Principal: To whom you are giving the access (IAM User/Account/Public Access)
+Resource: BucketName/*
+
+
+Service 2: Elastic Compute Cloud (EC2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
