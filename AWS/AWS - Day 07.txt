@@ -1,0 +1,116 @@
+													Day 07_AWS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Service 2: Elastic Compute Cloud (EC2)
+
+Topics:
+Day 06 Task: Deploy NodeJS app with PM2 on AWS EC2 instance 
+
+1. AMI - Migrate AMI (EC2 VM) from one Account to Another Account
+2. AMI - Changing the region of AMI / How to create a copy of existing AMI in another region
+3. AMI - How to connect to VM when keypair is lost
+4. Monitoring EC2 Instance using CloudWatch (CPU Utilization)
+5. Launching instance using "userdata"
+6. EBS - Concept
+
+
+Assignment: 7. Monitoring EC2 Instance using CloudWatch (Memory Utilization)
+
+
+3. AMI - How to connect to VM when keypair is lost
+Step 1: Launch VM with a Keypair - Connect to VM - Create some files (Ex; touch python{1..5}.py} 
+Step 2: Create snapshot
+Step 3: Create AMI from Snapshot
+Step 4: Launch VM using AMI (New Instance) - Ex: This instance is launched using SnapshotAMI
+Step 5: Connect to "New Instance" and verify the files availability
+
+
+5. Launching instance using "userdata"
+Userdata:
+#!/bin/bash -xe
+
+# STEP 1 - Updates
+yum -y update
+
+# STEP 2 - Begin Configuration
+yum -y install httpd
+systemctl enable httpd
+systemctl start httpd
+
+# STEP 3 - Custom Web Page
+echo "<h1> I'm Kastro. For FREE AWS Course, YouTube.com/LearnWithKASTRO </h1>" >> /var/www/html/index.html
+
+
+4. Monitoring EC2 Instance using CloudWatch (CPU Utilization)
+
+CPU Utilization >= 15%
+SNS - Simple Notification Service
+
+6. EBS - Elastic Block Storage
+
+When we want to store data inside the VM or whatever softwares that we are going to install in the VM or whatever files/directories that we are creating in the VM, all these things will be stored in the backend component of a server.
+For every VM, the backend component by default available is EBS - Elastic Block Storage (EBS Volume)
+By default, an EBS Volume will be attached to an instance and this is known as 'ROOT VOLUME'
+The additional volumes that if you want to attach to a VM, those are called as EBS Volumes
+
+EBS cannot be used directly. We need to attach it to the server to fully utilize.
+
+In AWS Cloud, we have 3 different storage types;
+	- Block level storage (Ex: EBS)
+	- File level storage (Ex: EFS/FSx)
+	- Object level storage (Ex: S3)
+
+AWS will give 8 GB of default EBS Size (Linux)
+For free tier, upto 30 GB can be stored 
+
+In Windows - 30 GB
+
+EC2 and EBS are independent. They are connected by a network (VPC)
+
+Instance Store - is called as temporary storage
+EBS - is called as permanent storage
+
+EC2 ----- Instance Store ----- Created files --- EC2 Stop/Terminate ---- Data is gone
+EC2 ----- EBS ----- Created files --- EC2 Stop/Terminate ---- Data is not gone (Configuration)
+
+Note: In EBS, even if the server is stopped or terminated, the EBS volume will not get deleted. That is why we call EBS volume as 'Persistent Storage' To do we need to make a configuration.
+
+For one EC2 instance, a total of 16 EBS volumes
+64TB of data can be stored in one EBS volume
+
+1 EBS volume can be attached to multiple EC2 instances - EBS Multiattach
+EBS is based on AZ
+If an EBS volume is created in any AZ, a clone will be created in the backend by AWS
+
+Types of EBS volumes;
+1. SSD Type - better performance
+2. HDD Type - slow performance
+3. Previous generation
+
+SSD -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
