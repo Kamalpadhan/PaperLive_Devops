@@ -1,0 +1,147 @@
+													Day 08_AWS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Service 2: Elastic Compute Cloud (EC2)
+
+Topics:
+Day 07 Task: Monitoring EC2 Instance using CloudWatch (CPU Utilization) 
+
+1. EBS - Concept
+2. EBS - Creation of EBS and attach to running VM
+3. EBS - Resizing and Changing the EBS type
+4. EBS - Multiattach
+5. EBS - Snapshot
+6. ASG & LB - Concept
+
+1. EBS - Concept
+-------------------------------
+Types of EBS volumes;
+1. SSD Type - better performance
+2. HDD Type - slow performance
+3. Previous generation
+
+SSD - 
+The data which is accessed frequently 
+SSD is majorly used when we have less data but which is accessed frequently 
+The advantage of using SSD is, it works on IOPS (Input Output Per Second)
+
+HDD -
+It is used when we have large data but it is accessed less frequently
+HDD functions based on "throughput" method (MBPS/GBPS)
+Ex: In Big Data Analytics, HDD is used
+
+Previous generation -
+It is an outdated EBS volume
+
+Types of SSD;
+1. General purpose
+	- When there is a normal usage of data, then we select GP instance type
+	- By default, all the EC2 instances will be launched using GP
+	- GP is of 2 types;
+		a) gp2
+		b) gp3
+2. Provisioned IOPS
+	- When there is a rapid access of data, then we select Provisioned IOPS
+	- IOPS is of 3 types;
+		a) io1
+		b) io2
+		c) io2 Block Express (Supported by R5B instance type)
+
+
+Note: EBS Multiattach is supported only in SSD type and in particularly it is supported in Provisioned IOPS, only for NITRO based instances
+
+Snapshot - backup of EBS volume
+AMI		- backup of instance
+
+10.00 EBS (10 GB) - Snapshot 1 (Complete backup)
+05.00 EBS (10 + 8 GB) - Snapshot 2 (Only the additional storage/data will be taken as backup)
+
+Incremental backups - additional storage will be taken as a backup in new snapshots
+
+EBS Multiattach
+---------------------------
+
+
+
+----------------------------------
+Autoscaling & Load Balancer
+----------------------------------
+
+EC2 - Max of 100 requests per second - 
+
+What is Autoscaling? 
+It is the concept of automatically increasing or decreasing the number of instances based on the traffic coming to the application.
+Scale in (decreasing) and Scale out (increasing)
+
+To scale in or scale out the instances using autoscaling, we will use server metrics. 
+These metrics are provided by Cloud Watch service
+CPU Utilization 
+	CPU Utilization > 85% - increase
+	CPU Utilization < 20% - decrease
+
+Note: 24x7 one server should be available for the application to run
+
+Types of autoscaling;
+1. Horizontal autoscaling - is the addition of same configured servers. HAS doesn't have downtime. By default, AWS provides only HAS
+2. Vertical autoscaling - is the addition of differently configured servers based on load, by delete the existing server and will create a new server. VAS will have downtime. It is manual work
+
+AS supports EC2, RDS, ECS, Dynamo DB
+
+Load Balancer;
+LB will distribute the traffic equally to all the instances
+LB has Target Groups
+1 LB will have a minimum capacity of 10 Billion requests/seconds (1 Million requests/second)
+LB can also perform the health checks for the instances. If the health of any instance is found bad, LB will terminate that instance and will create a new instance 
+
+LB ---> Autoscaling Group
+
+Whenever we are working with autoscaling concept; we have 2 steps;
+	1. Creating the launch template (Previously we used to have Launch Configuration)
+	2. Creating the autoscaling group
+			2.1. Desired capacity - at the time of launching an app how many servers i need on immediate basis 
+			2.2. Minimum capacity - at any given point of time, irrespective of the traffic coming to the app, how many servers i need to have
+			2.3. Maximum capacity - at a maximum for my app, how many servers should be available 
+
+HAS has 3 types of AS;
+1. Dynamic scaling - is based on CPU threshold value
+2. Scheduled scaling - is based on business hours (11.00-1.00 PM) 
+3. Predictive scaling - AWS itself decides when to create and when delete the servers. it is based on ML algorithm
+
+Load Balancer types;
+1. Elastic Load Balancer (ELB) 
+2. Network Load Balancer (NLB)
+3. Gateway Load Balancer (GLB)
+4. Classic Load Balancer (CLB) - AWS will not recommend this. It is an old version of LB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
