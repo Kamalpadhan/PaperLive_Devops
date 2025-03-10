@@ -1,0 +1,102 @@
+													Day 09_AWS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Service 2: Elastic Compute Cloud (EC2)
+
+1. Autoscaling Demo 1
+2. Load Balancer & Autoscaling Demo 2 
+3. Load Balancer & Autoscaling Demo 3
+4. IAM Users
+5. IAM Policies
+
+
+
+Commands to increase load on Instance:
+-------------------------------------------------
+Amazon Linux 2 AMI
+---------------------------------
+sudo amazon-linux-extras install epel -y
+sudo yum install stress -y
+stress --cpu 8
+
+
+#!/bin/bash -xe
+
+# STEP 1 - Updates
+yum -y update
+
+# STEP 2 - Begin Configuration
+yum -y install httpd
+systemctl enable httpd
+systemctl start httpd
+
+# STEP 3 - Custom Web Page
+echo "<h1> I'm Kastro. For FREE AWS Course, YouTube.com/LearnWithKASTRO </h1>" >> /var/www/html/index.html
+
+
+
+#!/bin/bash -xe
+
+# STEP 1 - Updates
+yum -y update
+
+# STEP 2 - Begin Configuration
+yum -y install httpd
+systemctl enable httpd
+systemctl start httpd
+
+# STEP 3 - Custom Web Page
+echo "<h1> I'm Kastro. For FREE Docker Course, YouTube.com/LearnWithKASTRO </h1>" >> /var/www/html/index.html
+
+Instance1 - 100.101.102.103 ---- MyApp
+Instance2 - 100.101.102.104 ---- MyApp
+
+Load Balancer --- Attached the Targets --- Load Balancer URL --- Access the App
+
+
+Service 3: CloudWatch
+Service 4: Simple Notification Service
+Service 5: Data Sync
+
+
+Service 6: IAM - Identity and Access Management
+
+IAM is completely free.
+IAM is a global service
+
+Two types of users;
+	1. Root user - will have all kinds of permissions
+	2. IAM user - will have limited permissions
+
+When we join any organization, we will be given IAM User credentials (with few access permissions)
+
+For IAM user, we can give the access to AWS Console in 2 ways;
+	1. CLI Access
+	2. AWS Console Access
+
+IAM
+ 1. IAM Users
+ 2. IAM Roles
+ 3. IAM Permissions 
+ 4. IAM Groups
+
+Policies
+ - Customer Managed Policy
+ - AWS Managed Policy
+
+
+
+Demo@123
+
+
+
+
+
+
+
+
+
+
+
+
+
+
