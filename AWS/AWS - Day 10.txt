@@ -1,0 +1,103 @@
+													Day 10_AWS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Service 6: IAM - Identity and Access Management
+
+IAM Role;
+	- Service based roles
+	- Account based roles
+
+Service 7: Cloud Watch 
+Service 8: Cloud Trial
+ 
+CW is a resource monitoring tool
+CT is activity monitoring tool
+CW can monitor all AWS services
+CW is having 3 important features;
+	- Alarms
+	- Events
+	- Logs
+
+EC2 instance --- Launched an app ---- To monitor the VM, we have something known as "Host Level Metrics"
+	- Metrics are nothing but CPU, Network, Status Check, Disk.
+		- CW can only monitor the above 4 host level metrics. These are default metrics
+
+Two types of monitorings;
+	1. Basic monitoring		- every 5 minutes we will get data points - FREE
+	2. Detailed monitoring	- every minute we will get data points	- BILLABLE
+
+
+ALARMS
+---------------------
+In CW, we will create Alarms
+Alarms can send notifications and they can also perform some actions such as stop, terminate, reboot, recover
+CW alarms cannot START ec2 instances
+CW alarm has 3 states - 1) In Alarm	2) OK	3) Insufficient
+
+EC2 Instance - CPU Utilization - >80% - Notification should come
+	- If it is going >80%, the alarm state will be IN ALARM
+	- If it is <80%, the alarm state will be OK
+	- If an EC2 instance is stopped, the alarm state will be INSUFFICIENT
+There is another concept in CW known as Composite Alarms
+Generally, CW alarms are single metric
+Composite alarms can monitor the different states of multiple alarms
+	Conditions: AND condition, OR condition
+
+EVENTS
+--------------------
+All CW events are stored in Event Bridge
+EC2 instance - 6 states
+
+LOGS
+-------------------
+Two types;
+1. System logs
+2. App logs
+
+I will launch an EC2 instance in which i have to install "CW Agent". Once the CW Agent is installed, it will give the logs in /etc/awslogs path
+Inside the path (/etc/awslogs) we will have 2 files. We need to modify these files and tell that where is our log directory. Only after doing this, all the logs will be pushed to "CW Logs"
+
+CW Agent doesn't have any access to push the logs to CW Logs. To do this we need to create IAM Role. For this role, we will give CWFullAccess permission. This role will be attached to EC2 instance
+
+
+CW Demo 3
+EC2 Instance - CPU < 20%, i need to stop the instance, CPU > 80%, i need to create additional instance
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
