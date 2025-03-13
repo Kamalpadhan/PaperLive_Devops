@@ -1,0 +1,121 @@
+													Day 12_AWS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Service 10: Route 53
+
+Route 53 is a DNS service available in AWS
+53 is the DNS port number
+In Route 53, we will create records (tasks)
+	- 2 EC2 VMs -----> Zomato App -----> Public IP 1, Public IP 2 -----> It is not recommended to provide the IPs to end users in order to access 	  the app -----> Attach these 2 VMs to ELB -----> LB URL (lengthy url)  -----> It is not recommended to ask users to access the app using LB 	  URL -----> LB URL will be mapped to a domain -----> Domain is available in Route 53
+	- Record will convert the lengthy url of LB into the shortest domain url (www.zomato.com)
+
+Browser -----> Any browser requires 2 things; 1. Hostname, 2. IP Address -----> From the browser, the request will got to Local DNS -----> From Local DNS, the request will go to RNS (Root Name Server) -----> From RNS, the request goes to TLD (Top Level Domain) -----> From TLD, the request goes to Name Server (NS) -----> From NS, the request goes to SOA
+
+DNS keeps all the host names and IP addresses. It will track all the hostnames and IPs.
+	- DNS can convert the hostname to IP and IP to hostname
+	- Ex: Zomato.com -----> 123.132.143.134
+To know the IP address of any website, we will use 'ns loopkup'
+
+In Route 53, we need to configure Nameserver and SOA
+
+Route 53 is a global service
+
+Route 53 features;
+1. Domain registration
+2. DNS routing
+3. Health checks
+4. Routing policies
+
+DNS is all about records
+In Route 53, the first we will create is Hosted Zone
+This hosted zone contains records
+
+The name of the hosted zone that we should create is the Domain Name (.com, .in., .gov, .edu...)
+Hosted zone and domain name are same
+
+Types of hosted zones;
+1. Public HZ		- websites will be available on internet - generally preferred
+2. Private HZ		- if you want to access a website within a specific network, we will use Private HZ
+
+HZ ----> Records ----> www.kastro.com ----> This Kastro.com will be routed to LB URL ----> LB URL will route the traffic EC2 Instances ----> Inside the EC2 Instances, our app is hosted
+
+Whenever we create a public hosted zone, 2 records will be created automatically
+	1. NS Record		- It is a pool of 4 servers
+	2. SOA Record	- Admin for hosted zone. It has IP address
+
+NS and SOA records are automatically created and managed/handled by AWS ---- only when the domain is purchased using Route 53
+
+Suppose if the domain is purchased through 3rd party websites, how Route 53 works?
+	- In this case, we need to manually create a hosted zone in Route 53 and then automatically NS and SOA records will be created
+	- Kastro.com ---> Godaddy ----> When users access Kastro.com, the request will go to godaddy website. But in godaddy website nothing is 	there related to our app. All app infra available in AWS. Here, we need to establish connection from godaddy to route 53. For this purpose, 	what we need to do is, we know that whenever we create a hosted zone, these 4 servers we will  update in godaddy.
+	- Whenever we purchase a domain using 3rd party site, latency issues will be there
+
+Note: NS and SOA records shouldn't be deleted. If deleted, app will not work
+
+
+Route 53 Record Types
+-----------------------------------
+1. A Record
+2. AAAA Record
+3. CNAME Record
+4. ALIAS Record
+5. MX Record
+
+
+A Record ------< URL> ----> Route 53 ----> Hosted Zone ----> Record ----> URL --- IPv4
+AAAA Record ----- URL --- IPv6
+CNAME Record ----- URL --- URL
+ALIAS Record ---- URL ---- IP/LB URL
+
+CNAME Record are billable (www.kastro.com) (www.kastro.com/mobiles)
+For sub-domains we can use CNAME Record
+Alias Record is FREE
+
+Main Domain
+Naked Domain
+
+------------------------------
+Routing Policies
+------------------------------
+Kastro.com -----> Route 53 -----> HZ -----> LB URL -----> EC2
+
+1. Simple Routing Policy - No Health Checks 
+2. Fail Over Routing Policy - Health Checks are performed
+3. Geolocation Routing Policy - R53 identities users/requests location automatically and redirect to the correct record
+
+www.kastro.com -----> HA ----> Low Latency
+
+www.kastro.com --- Mumbai ELB/IP
+www.kastro.com --- N.Viriginia ELB/IP
+www.kastro.com --- Osaka ELB/IP
+
+4. Latency Based Routing Policy
+5. Multi Value Routing Policy - Health Checks are performed
+6. Weighted Routing Policy
+
+
+
+AWS Project: https://github.com/KastroVKiran/3TierArchitectureApp.git
+
+
+----------------------------
+Service 11: VPC
+----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
