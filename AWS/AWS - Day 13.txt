@@ -1,0 +1,177 @@
+													Day 13_AWS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------
+Service 11: VPC
+----------------------------
+VPC - Virtual Private Cloud
+VPC is a region specific service
+Once we create an AWS Account, in every region we will get one default VPC attached with Subnets, Route Tables, and IGW
+
+To create a VPC, we have to create a Network
+
+CIDR 
+Classless Inter Domain Routing - a method for allocating IP addresses
+CIDR consists of two components;
+1. Base IP		- represents an IP which contains with in the specified range
+2. Subnet mask	- defines how many bits can change in the IP
+Subnet mask allows part of the underlying IP address to get from the base IP
+
+132.198.168.0/32
+
+Types of IP
+1. IPv4 - contains 4 octects (Ex: 100.111.222.333). Each octect will have 8 bits. The total size is 32 bits
+2. IPv6 - contains 8 octects. Each octect is separated by : IPv6 is an alphanumeric IP address. Each octect will have 16 bits
+IPv6 is introduced to overcome the IPv4 address exhaustion
+
+132.142.155.166/32 ----- 2^0 = 1
+/31 ---- 2^1 = 2
+/30 ---- 2^2 = 4
+/29 ---- 2^3 = 8
+
+
+132.142.0.0/32 ----- 132.142.0.0
+132.142.0.0/31 ----- 132.142.0.0, 132.142.0.1
+132.142.0.0/30 ----- 132.142.0.0, 132.142.0.1, 132.142.0.2
+
+
+
+
+132.142.0.0./0 ---- 0.0.0.0 to 255.255.255.255 ----> Allows all IPs
+
+
+URL: https://www.ipaddressguide.com/cidr
+URL: https://cidr.xyz/
+
+
+Types of IPs;
+1. Public IP --- is used to connect to the server outside of the network
+2. Private IP --- is used to connect to the server within the network (VPC Peering)
+
+The components in VPC
+----------------------------------
+1. VPC - its a custom network
+
+2. Subnets - is a logical partitioning of a network into smaller IP ranges
+A subnet is a range of IPv4 addresses in VPC
+AWS will reserve 5 IPs (first 4 and last) in each subnet
+These 5 IPs are not available for use and cannot be assigned to an EC2 instance
+Ex: 10.0.0.0/24 --- 256 IPs (256-5 = 251 IPs)
+10.0.0.0 - Network address
+10.0.0.1 - Reserved by AWS for VPC router
+10.0.0.2 - Reserved by AWS for mapping to amazon provided DNS
+10.0.0.3 - Reserved by AWS for future use
+10.0.0.255 - Network Broadcast Address
+
+2^32-n
+
+Ex: If you need 29 IPs
+	-- You cannot chose a subnet of size /27 (32 IPs ====> 32 - 5 = 27 < 29)
+	-- You need to chose a subnet of size /26 (64 IPs =====> 64 - 5 = 59 > 29)
+
+Types of subnets;
+1. Public subnet - allows all type traffic
+2. Private subnet - allows limited traffic
+
+The number of default subnets in a region depends on AZs
+
+3. Route Tables
+RT will help us to divert/route the traffic
+Public RT
+Private RT
+Each subnet is associated with a RT
+
+4. Internet Gateway
+Allows resources in a VPC to connect to the internet
+Must be created separately from a VPC
+Attach IGW to VPC
+RT must also be created to make IGW work
+Note: If we attach IGW to a subnet then that subnet is called as Public Subnet
+
+5. NAT Gateway
+NAT - Network Address Translator
+NATGW is created only in Public Subnet
+NATGW will only have outgoing traffic
+The RT are connected to NATGW
+NATGW enables outbound internet access for private subnets
+VPC Sizing
+------------------
+The process of deciding no. of IPs required for VPC and no. of IPs required for subnets is called as VPC Sizes
+VPC sizing will be calculated in 2^
+
+-----------------------
+NACL vs SG
+-----------------------
+SG
+1. SG acts as a firewall to secure our resources
+2. SG contains inbound rules and outbound rules
+	inbound rule ---- controls incoming traffic
+	outbound rule ---- controls outgoing traffic
+3. In one SG we can add a maximum of 50 rules
+4. SG supports only Allow rules
+5. Multiple SGs can be attached to single instance and one instance can have a maximum of 5 SGs
+6. SGs are stateful (any changes applied to incoming rules will be applicable for outgoing rules also)
+
+NACL
+Network Access Control List
+NACL acts as a firewall for the subnets in VPC
+NACL is applicable at the subnet level
+NACL rules are applicable for all the resources  which are part of that subnet
+NACL rules are stateless (Any changes applied to incoming rules will not be applicable for outgoing rues. We need to explicitly allow the rules)
+NACL we can configure both Allow and Deny rules
+One subnet can have only one NACL
+One NACL can be added to multiple subnets
+
+
+AWS VPC Endpoints
+----------------------------------
+To connect from a VPC to any AWS service privately, we will use VPC endpoint
+Types of VPC endpoints
+1. Interface endpoints
+2. Gateway endpoints
+3. Gateway loadbalancer endpoints
+
+
+17,18,19 ---- VPC
+20 ---- RDS
+24,25,26 --- Additional AWS Services
+
+Project - 3 Tier Architecture 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Automating the Start and Stop of EC2 instances
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
