@@ -1,0 +1,82 @@
+													Day 16_AWS
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------
+Service 11: VPC
+----------------------------
+1. VPC Flow logs
+-----------------------------
+Additional charges
+To know who is accessing the VPC Network
+Flowlogs can be enabled in 3 levels;
+	1. VPC Level
+	2. Subnet Level
+	3. ENIs (Elastic Network Interface)
+
+All the logs will be analyzed using Guard Duty. If we just enable Guard Duty and send the VPC flowlogs to it, it will do the analysis and thus it helps us to take necessary action.
+Flowlogs can capture ACCEPTED, REJECTED, ALL
+All the logs can be published to S3 Bucket or CloudWatch Logs
+To share the logs to 3rd party services (Splunk, Sumologic) we will use Kinesis Firehouse
+What kind of info we will be getting in flowlogs?
+	Source IP, Destination IP, Packet Size, Source Port, Destination Port, Call is accepted/rejected
+Flowlogs will come every 1 min or every 10 minutes
+	- every 10 minutes (default)
+
+--------------------------
+Service 12: RDS
+--------------------------
+Relational Database Service
+Region specific
+RDS Instances
+Highly cost
+
+App -----> Database (RDS)
+
+Data is a collection of values or information
+Database is an organized collection of data
+3 types of data;
+	1 Structured
+	2 Unstructured
+	3 Semi structured
+
+Structured data; typically stores the data in table format with pre-defined structures/schema
+commonly used in relational databases
+suitable for complex queries and analytics
+
+Unstructured data; it has unorganized. No defined schema
+
+Semi structured data; it has unorganized  data but not constrained by a fixed schema
+mostly the data is available in JSON or XML format
+
+As a cloud engineer, we just have to create the RDS instance with required configurations and give the database instance to the database engineers
+
+NoSQL, SQL, Oracle, Aurora...
+
+
+AWS 3 Tier Project: https://github.com/KastroVKiran/3TierArchitectureApp.git
+
+
+
+Please share your feedback on LinkedIn about AWS & DevOps classes
+Make sure to tag me on the post
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
