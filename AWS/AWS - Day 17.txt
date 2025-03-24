@@ -1,0 +1,24 @@
+AWS_Day 17
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+DevOps on AWS
+--------------------------------------------------------
+AWS Code Suite Services
+	AWS Code Repository	- GitHub - No longer available
+	AWS Code Commit	- GitHub 
+	AWS Code Build		- Maven		- buildspec.yml
+	AWS Code Pipeline		- Jenkins		- appspec.yml
+	AWS Cloud Formation	- Terraform	- cloud formation templates
+
+ECR		- Elastic Container Registry	- Stores the docker images
+ECS		- Elastic Container Service	- Container creation
+AWS Fargate - it is fully managed by AWS
+
+Repo URL: https://github.com/KastroVKiran/ECR-ECS-Project.git
+
+-------------------------------------------------------
+AWS - DevOps Project
+-------------------------------------------------------
+CI & CD using AWS Services with GitHub 
+-------------------------------------------------------
+AWSCodePipelineServiceRole-us-east-1-project-pipeline
